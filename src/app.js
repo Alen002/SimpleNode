@@ -13,16 +13,38 @@ app.listen(port, () => {
 console.log(path.join(__dirname, '../public')); //path and filename where the current script lives in, in this case /src/app.js */
 
 const publicDirectoryPath = path.join(__dirname, '../public')
+//all static assets are in the public directory
 app.use(express.static(publicDirectoryPath))    //use, a way to customize the server
 
 app.get('/weather', (req, res) => {
-    //http://localhost:3000/help  
-        res.send({
-            forecast: 23,
-            location: 'Orlando'
-         });
-    });
+    if (!req.query.address) {
+        return res.send({
+            error: 'Please enter an address'
+        })
+    }
+    
+    res.send({
+        forecast: 23,
+        location: 'Orlando',
+        address: req.query.address
+     });
+    
+});
 
+
+app.get('/products', (req, res) => {
+    if (!req.query.search) {
+        return res.send({
+            error: 'Please start your search'
+        })
+    } 
+
+    res.send({
+        products: []
+    })
+    
+    
+});    
 
 
 
