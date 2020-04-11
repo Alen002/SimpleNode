@@ -3,12 +3,14 @@ const path = require('path');
 const request = require('request');  
 
 const key = require('../public/api.js');
-const url = 'https://api.openweathermap.org/data/2.5/weather?q=Liverpool'; 
+const url = 'https://api.openweathermap.org/data/2.5/weather?q='; 
 
-request(`http://api.openweathermap.org/data/2.5/weather?q=London&${key.API_key}`, function (error, response, body) {
+request(`${url}Saigon&${key.API_key}`, function (error, response, body) {
   console.error('error:', error); // Print the error if one occurred
   console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
-  console.log('body:', body); // Print the HTML
+  /* console.log('body:', body); */ // Print the HTML
+  const data = JSON.parse(response.body);
+  console.log(data);
  
 });
 
