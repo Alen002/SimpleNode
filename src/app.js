@@ -1,5 +1,18 @@
 const path = require('path');
 
+const request = require('request');  
+
+const key = require('../public/api.js');
+const url = 'https://api.openweathermap.org/data/2.5/weather?q=Liverpool'; 
+
+request(`http://api.openweathermap.org/data/2.5/weather?q=London&${key.API_key}`, function (error, response, body) {
+  console.error('error:', error); // Print the error if one occurred
+  console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+  console.log('body:', body); // Print the HTML
+ 
+});
+
+
 const express = require('express');
 const app = express();
 const port = 3000;
@@ -23,11 +36,16 @@ app.get('/weather', (req, res) => {
         })
     }
     
-    res.send({
+
+
+
+
+
+    /* res.send({
         forecast: 23,
         location: 'Orlando',
         address: req.query.address
-     });
+     }); */
     
 });
 
