@@ -1,13 +1,24 @@
 
 const request = require('request');  
+//import the API keys from another file
+const key = require('../public/api.js');  
 
-const key = require('../public/api.js');
-const url = `https://api.openweathermap.org/data/2.5/weather?q=Saigon&${key.API_key}`
+// Request for weather data
+const url = `https://api.openweathermap.org/data/2.5/weather?q=Beijing&${key.API_key}`
 
 request({url: url, json: true}, function (error, response, body) {
-    console.log(`the city is ${response.body.name}`)
+// for lower level errors -> such as no internet connection etc.    
+    if(error) { 
+        console.log('something went wrong. Maybe there is no internet connection...');
+// if response.body.message is true -> there is a message        
+    } else if (response.body.message) { 
+// Output 'city not found'
+        console.log(response.body.message); 
+    } else {
+        console.log(`the city is ${response.body.name}`)
+        console.log('The temperature is right now', Math.round(response.body.main.temp - 273.15)); 
+    }
     
-  
     /* console.error('error:', error); // Print the error if one occurred
     console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
     /* console.log('body:', body); */ // Print the HTML
@@ -18,13 +29,23 @@ request({url: url, json: true}, function (error, response, body) {
 
 
 // Geocoding
-const urlGeocode = `https://api.mapbox.com/geocoding/v5/mapbox.places/Basel.json?access_token=${key.api_Mapbox}&limit=1`;
+const urlGeocode = `https://api.mapbox.com/geocoding/v5/mapbox.places/?????.json?access_token=${key.api_Mapbox}&limit=1`;
 
 request({url: urlGeocode, json: true}, (error, response, body) => {
-   const latitude = response.body.features[0].center[1];
-   const longitude = response.body.features[0].center[0];
-   console.log(latitude)
-   console.log(longitude)
+   if (error) {
+        console.log('Unable to retrieve data.');
+   } else if (response.body.message) {
+        console.log('Something went wrong. Please type again your destination');
+
+    } else { 
+        const latitude = response.body.features[0].center[1];
+        const longitude = response.body.features[0].center[0];
+        console.log(latitude)
+        console.log(longitude)
+   }
+   
+   
+   
     
 });
 
@@ -48,7 +69,8 @@ console.log(path.join(__dirname, '../public')); //path and filename where the cu
 const path = require('path');
 const publicDirectoryPath = path.join(__dirname, '../public')
 //all static assets are in the public directory
-app.use(express.static(publicDirectoryPath))    //use, a way to customize the server
+//use, a way to customize the server
+app.use(express.static(publicDirectoryPath))    
 
 app.get('/weather', (req, res) => {
     if (!req.query.address) {
