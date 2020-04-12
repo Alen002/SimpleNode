@@ -1,18 +1,36 @@
-const path = require('path');
 
 const request = require('request');  
 
 const key = require('../public/api.js');
-const url = 'https://api.openweathermap.org/data/2.5/weather?q='; 
+const url = `https://api.openweathermap.org/data/2.5/weather?q=Saigon&${key.API_key}`
 
-request(`${url}Saigon&${key.API_key}`, function (error, response, body) {
-  console.error('error:', error); // Print the error if one occurred
-  console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
-  /* console.log('body:', body); */ // Print the HTML
-  const data = JSON.parse(response.body);
-  console.log(data);
+request({url: url, json: true}, function (error, response, body) {
+    console.log(`the city is ${response.body.name}`)
+    
+  
+    /* console.error('error:', error); // Print the error if one occurred
+    console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+    /* console.log('body:', body); */ // Print the HTML
+    /* const data = JSON.parse(response.body);
+    console.log(data.sys);  */
  
 });
+
+
+// Geocoding
+const urlGeocode = `https://api.mapbox.com/geocoding/v5/mapbox.places/Basel.json?access_token=${key.api_Mapbox}&limit=1`;
+
+request({url: urlGeocode, json: true}, (error, response, body) => {
+   const latitude = response.body.features[0].center[1];
+   const longitude = response.body.features[0].center[0];
+   console.log(latitude)
+   console.log(longitude)
+    
+});
+
+
+
+
 
 
 const express = require('express');
@@ -27,6 +45,7 @@ app.listen(port, () => {
 /* console.log(__dirname); //path to the directory where the current script lives in, in this case /src
 console.log(path.join(__dirname, '../public')); //path and filename where the current script lives in, in this case /src/app.js */
 
+const path = require('path');
 const publicDirectoryPath = path.join(__dirname, '../public')
 //all static assets are in the public directory
 app.use(express.static(publicDirectoryPath))    //use, a way to customize the server
@@ -38,11 +57,6 @@ app.get('/weather', (req, res) => {
         })
     }
     
-
-
-
-
-
     /* res.send({
         forecast: 23,
         location: 'Orlando',
